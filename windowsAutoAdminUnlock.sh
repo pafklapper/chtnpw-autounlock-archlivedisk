@@ -48,9 +48,7 @@ esac
 
 findAndMountWindowsPartition()
 {
-echo aa
-blkid|grep ntfs| while read ntfsLine; do
-echo bb
+sudo blkid|grep ntfs| while read ntfsLine; do
 	ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
 	echo "ntfsblk : $ntfsBlk"
 
