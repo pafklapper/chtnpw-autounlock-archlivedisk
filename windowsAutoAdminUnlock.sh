@@ -7,7 +7,7 @@
 mountPoint="/mnt"
 
 #INTVARS
-ntfsblk=""
+ntfsBlk=""
 
 
 # bash run options
