@@ -104,8 +104,8 @@ main()
 	fi
 
 	logp beginsection
-	logp info "Automagically unlock Administrator user on Windows partition"
-	logp info "this is a chntpw wrapper script.."
+	logp info "Our purpose today: to automagically unlocking Administrator user on Windows partition.."
+	logp info "(this is a chntpw wrapper script)"
 
 	logp info "Searching and mounting Windows partition..."
 	if findAndMountWindowsPartition; then
