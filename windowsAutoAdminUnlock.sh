@@ -70,13 +70,12 @@ blkid|grep ntfs| while read ntfsLine; do
 			logp warning "Mounting harddisk $ntfsBlk failed! "
 			umount -f $ntfsBlk
 			ntfsfix -b -d $ntfsBlk
-			if  [ $? -eq 0 ]; then
-				logp info "NTFS filesystem on harddisk $ntfsBlk was succesfully fixed!"
-			else
-				logp fatal "Couldn't fixe the NTFS filesystem on harddisk $ntfsBlk!"
+			if  [ ! $? -eq 0 ]; then
+				logp fatal "Couldn't fix the NTFS filesystem on harddisk $ntfsBlk!"
 			fi
 		else
 			if [ -d $mountPoint/Windows ]; then
+				logp info "Found Windows-installation @ $ntfsBlk!"
 				return 0
 			else
 				umount $mountPoint
@@ -113,7 +112,7 @@ main()
 
 	logp info "Searching and mounting Windows partition..."
 	if findAndMountWindowsPartition; then
-		logp info "Found Windwos partion on $ntfsBlk"
+		logp info "Found Windows partion on $ntfsBlk"
 	else 
 		logp fatal "$(lsblk -f)"
 		logp fatal "No Windows partitions could be found"
@@ -121,11 +120,11 @@ main()
 	
 	logp info "unlocking user Administrator using chntpw magic..."
 	if unlockAdminUser; then
-		logp info "succesfully unlocked Administrator"
+		logp info "By the Gods! the Administrator is fully cooperating!"
 	else
 		logp fatal "No dice :("
 	fi
-	logp info "Exiting now to halt!"
+	logp info "Exiting now to halt system!"
 	logp endsection
 
 	# sleep 1 && poweroff
