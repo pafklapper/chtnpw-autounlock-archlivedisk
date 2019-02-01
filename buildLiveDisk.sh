@@ -8,7 +8,9 @@ rm -rf $livediskWD
 }
 trap finish EXIT SIGINT SIGTERM
 
-pacman -Sy archiso arch-install-scripts
+
+pacman -Qi archiso || pacman -Sy archiso
+pacman -Qi arch-install-scripts || pacman -Sy arch-install-scripts 
 
 cp $(dirname $0)/windowsAutoAdminUnlock.service $(dirname $0)/livedisk/airootfs/etc/systemd/system/
 cp $(dirname $0)/windowsAutoAdminUnlock.sh $(dirname $0)/livedisk/airootfs/root/
