@@ -48,7 +48,7 @@ esac
 
 findAndMountWindowsPartition()
 {
-sudo blkid|grep ntfs| while read ntfsLine; do
+blkid|grep ntfs| while read ntfsLine; do
 	ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
 	echo "ntfsblk : $ntfsBlk"
 
@@ -92,6 +92,10 @@ sync
 
 main()
 {
+	if [ ! "$(whoami)" -eq "root" ]; then
+		logp fatal "Need root to continue..!"
+	fi
+
 	logp beginsection
 	logp info "Automagically unlock Administrator user on Windows partition"
 	logp info "this is a chntpw wrapper script.."
