@@ -25,5 +25,4 @@ systemctl set-default multi-user.target
 
 #magic
 systemctl disable getty@tty1.service
-cp /root/windowsAutoAdminUnlock.service /etc/systemd/system/
 systemctl enable windowsAutoAdminUnlock.service

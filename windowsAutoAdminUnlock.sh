@@ -107,7 +107,7 @@ main()
 		logp fatal "Need root to continue!"
 	fi
 
-	logp beginsection
+	clear && logp beginsection
 	logp info "Our purpose today: to automagically unlocking Administrator user on Windows partition.."
 	logp info "(this is a chntpw wrapper script)"
 
