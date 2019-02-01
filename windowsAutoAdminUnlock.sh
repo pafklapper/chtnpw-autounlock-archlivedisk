@@ -11,6 +11,7 @@ set -o pipefail
 
 # trap
 function finish {
+echo finishing!
 sync
 unmount -f $mountPoint 
 }
