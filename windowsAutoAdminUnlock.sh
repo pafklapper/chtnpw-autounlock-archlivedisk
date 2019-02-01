@@ -61,7 +61,7 @@ esac
 findAndMountWindowsPartition()
 {
 blkid|grep ntfs| while read ntfsLine; do
-	ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
+	export ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
 
 	if [ -b $ntfsBlk ]; then 
 	mount -o remove_hiberfile $ntfsBlk $mountPoint
