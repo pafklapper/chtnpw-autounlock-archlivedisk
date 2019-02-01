@@ -103,7 +103,7 @@ sync
 main()
 {
 	if [ ! "$(whoami)" = "root" ]; then
-		logp fatal "Need root to continue..!"
+		logp fatal "Need root to continue!"
 	fi
 
 	logp beginsection
@@ -111,14 +111,12 @@ main()
 	logp info "(this is a chntpw wrapper script)"
 
 	logp info "Searching and mounting Windows partition..."
-	if findAndMountWindowsPartition; then
-		logp info "Found Windows partion on $ntfsBlk"
-	else 
+	if ! findAndMountWindowsPartition; then
 		logp fatal "$(lsblk -f)"
-		logp fatal "No Windows partitions could be found"
+		logp fatal "No Windows partition could be found!"
 	fi
 	
-	logp info "unlocking user Administrator using chntpw magic..."
+	logp info "Unlocking user Administrator using chntpw magic..."
 	if unlockAdminUser; then
 		logp info "By the Gods! the Administrator is fully cooperating!"
 	else
