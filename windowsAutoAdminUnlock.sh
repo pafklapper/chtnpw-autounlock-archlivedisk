@@ -6,6 +6,10 @@
 #GLOBVARS
 mountPoint="/mnt"
 
+#INTVARS
+ntfsblk=""
+
+
 # bash run options
 set -o pipefail
 
