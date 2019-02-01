@@ -89,7 +89,8 @@ done
 
 unlockAdminUser()
 {
-chntpw -u Administrator <<EOF 
+cp -a $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
+chntpw -u Administrator $mountPoint/Windows/System32/config/SAM<<EOF 
 1
 2
 q
