@@ -92,7 +92,7 @@ sync
 
 main()
 {
-	if [ ! "$(whoami)" -eq "root" ]; then
+	if [ ! "$(whoami)" = "root" ]; then
 		logp fatal "Need root to continue..!"
 	fi
 
