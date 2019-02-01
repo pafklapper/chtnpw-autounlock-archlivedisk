@@ -3,7 +3,7 @@
 
 livediskWD=`mktemp -d`
 
-finish {
+finish() {
 rm -rf $livediskWD
 }
 trap finish EXIT SIGINT SIGTERM
