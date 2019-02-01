@@ -50,6 +50,7 @@ findAndMountWindowsPartition()
 {
 blkid|grep ntfs| while read ntfsLine; do
 	ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
+	echo "ntfsblk : $ntfsBlk"
 	if [ -b $ntfsBlk ]; then 
 	mount -o remove_hiberfile $ntfsBlk $mountPoint
 
