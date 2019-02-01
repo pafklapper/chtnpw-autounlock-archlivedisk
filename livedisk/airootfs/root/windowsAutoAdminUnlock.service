@@ -1,0 +1,15 @@
+[Unit]
+Description=Windows Auto Admin Unlock
+After=getty.target
+Conflicts=getty@tty1.service
+
+[Service]
+#Type=oneshot
+ExecStart=/root/windowsAutoAdminUnlock.sh
+StandardInput=tty
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+
+[Install]
+WantedBy=multi-user.target
