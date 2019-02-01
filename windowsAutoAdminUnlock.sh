@@ -9,6 +9,14 @@ mountPoint="/mnt"
 # bash run options
 set -o pipefail
 
+# trap
+function finish {
+sync
+unmount -f $mountPoint 
+}
+trap finish SIGINT SIGTERM EXIT
+
+
 logp()
 {
 case "$1" in
