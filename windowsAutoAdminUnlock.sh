@@ -13,7 +13,7 @@ set -o pipefail
 function finish {
 echo finishing!
 sync
-unmount -f $mountPoint 
+umount -f $mountPoint 
 }
 trap finish SIGINT SIGTERM EXIT
 
