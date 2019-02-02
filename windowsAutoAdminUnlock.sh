@@ -2,13 +2,11 @@
 # automatically unlock the Administrator user on computers running Windows
 # WARNING: this script only supports systems running a SINGLE windows installation, more than one ntfs partition of whatever other kind is no problem.
 
-
 #GLOBVARS
 mountPoint="/mnt"
 
 #INTVARS
 ntfsBlk=""
-
 
 # bash run options
 set -o pipefail
@@ -21,14 +19,38 @@ umount -f $mountPoint
 trap finish SIGINT SIGTERM EXIT
 
 
-# global functions
-include globalFunctions
+# GLOBFUNCS
+logp()
+{
+case "$1" in
+	info)
+		echo -e "\e[32m\e[1m* \e[0m$2"
+	;;
+	warning)
+		echo -e "\033[31m\e[1m* \e[0m$2"
+	;;
+	fatal)
+		echo -e "\e[31m\e[1m* \e[0m\e[30m\e[101m$2"
+		echo -e "\e[31m\e[1m* \e[0m\e[30m\e[101mHit enter to halt system...\e[0m"
+
+		read </dev/tty && poweroff
+	;;
+	beginsection)
+		echo -e "\e[33m**********************************************"
+		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
+	;;
+	endsection)
+		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
+		echo -e "\e[33m**********************************************"
+	;;
+esac
+}
 
 
 findAndMountWindowsPartition()
 {
 blkid|grep ntfs| while read ntfsLine; do
-	export ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
+	ntfsBlk="$(echo $ntfsLine|cut -d: -f1)"
 
 	if [ -b $ntfsBlk ]; then 
 	mount -o remove_hiberfile $ntfsBlk $mountPoint
@@ -56,7 +78,8 @@ done
 
 unlockAdminUser()
 {
-cp -a $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
+
+(	cp -af $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
 chntpw -u Administrator $mountPoint/Windows/System32/config/SAM<<EOF 
 1
 2
@@ -64,7 +87,15 @@ q
 y
 
 EOF
-sync
+) 1>/dev/null 2>/dev/null
+
+if [ $? -eq 2 ]; then
+	sync 
+	return 0;
+else
+	sync
+	return 1;
+fi
 }
 
 
@@ -74,9 +105,10 @@ main()
 		logp fatal "Need root to continue!"
 	fi
 
-	clear && logp beginsection
+	clear
 	logp info "Our purpose today: to automagically unlocking Administrator user on Windows partition.."
 	logp info "(this is a chntpw wrapper script)"
+	logp beginsection
 
 	logp info "Searching and mounting Windows partition..."
 	if ! findAndMountWindowsPartition; then
@@ -93,7 +125,7 @@ main()
 	logp info "Exiting now to halt system!"
 	logp endsection
 
-	# sleep 1 && poweroff
+	sleep 1 && poweroff
 }
 
 
