@@ -21,5 +21,5 @@ systemctl set-default multi-user.target
 
 # magic
 systemctl disable getty@tty1.service
-pacman --noconfirm -R dhcpcd
+rm -f /etc/udev/rules.d/81-dhcpcd.rules
 systemctl enable windowsAutoAdminUnlock.service

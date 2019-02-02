@@ -28,11 +28,11 @@ case "$1" in
 	;;
 	beginsection)
 		echo -e "\e[33m**********************************************"
-		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
+		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||\e[0m"
 	;;
 	endsection)
 		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
-		echo -e "\e[33m**********************************************"
+		echo -e "\e[33m**********************************************\e[0m"
 	;;
 esac
 }
@@ -66,7 +66,13 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 	cp $wd/windowsAutoAdminUnlock.sh $wd/livedisk/airootfs/root/
 	retVal=$(($retVal + $?))
 
-	sed -i '/^APPEND:/ s/$/ quiet splash nomodeset/' $wd/livedisk/syslinux/archiso_sys.cfg
+	sed -i '/^APPEND/ s/$/ quiet splash nomodeset vga=current loglevel=1 rd.systemd.show_status=false rd.udev.log_priority=1/' $wd/livedisk/syslinux/archiso_sys.cfg
+	retVal=$(($retVal + $?))
+
+	sed -i '/^options/ s/$/ quiet splash nomodeset vga=current loglevel=1 rd.systemd.show_status=false rd.udev.log_priority=1/' $wd/livedisk/efiboot/loader/entries/*.conf
+	retVal=$(($retVal + $?))
+
+	sed -i '/timeout/c\timeout 1' $wd/livedisk/efiboot/loader/loader.conf
 	retVal=$(($retVal + $?))
 
 	echo CHNTPW > $wd/livedisk/airootfs/etc/hostname
@@ -84,6 +90,7 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 		logp fatal "failed to setup livedisk environment!"
 	fi
 
+	logp endsection
 else
 	logp fatal "Archiso profile directory could not be found! (archiso is only available in vanilla Archlinux, not in Manjaro or other derivates!)"
 fi

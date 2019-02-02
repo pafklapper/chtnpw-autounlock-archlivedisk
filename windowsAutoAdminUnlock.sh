@@ -4,6 +4,7 @@
 
 #GLOBVARS
 mountPoint="/mnt"
+finalizeTimeout=10 # set finalizeTimeout to 0 to immediately reboot after script has ran 
 
 #INTVARS
 ntfsBlk=""
@@ -38,11 +39,11 @@ case "$1" in
 	;;
 	beginsection)
 		echo -e "\e[33m**********************************************"
-		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
+		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||\e[0m"
 	;;
 	endsection)
 		echo -e "\e[33m||||||||||||||||||||||||||||||||||||||||||||||"
-		echo -e "\e[33m**********************************************"
+		echo -e "\e[33m**********************************************\e[0m"
 	;;
 esac
 }
@@ -99,6 +100,32 @@ else
 fi
 }
 
+relockAdminUserAfterFirstLogin()
+{
+cat>$mountPoint/autoDisableAdmin.bat<<EOF
+@ECHO OFF
+PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "net user Administrator /active:no"' -verb RunAs}"
+(goto) 2>nul & del "%~f0"
+EOF
+
+if [ $? -gt 0 ]; then
+	logp fatal "Couldn't insert script to Windows partition @ $mountPoint/autoDisableAdmin.bat! "
+fi
+
+
+chntpw -e $mountPoint/Windows/System32/config/SOFTWARE<<EOF 
+cd Microsoft\Windows\CurrentVersion\Run
+nv 1 autoDisableAdmin
+ed autoDisableAdmin
+C:\autoDisableAdmin.bat
+q
+y
+
+EOF
+
+	return $?
+}
+
 
 main()
 {
@@ -135,10 +162,18 @@ echo -e "\e[97m"
 	else
 		logp fatal "No dice :("
 	fi
-	logp info "Exiting in 3 seconds to halt system!"
+	
+	logp info "Adding script to Administrator shell:startup to auto-disable account after first login..."
+	if relockAdminUserAfterFirstLogin; then
+		logp info "Succesfully added script!"
+	else
+		logp fatal "Failed to add script to Administrator shell:startup to auto-disable account after first login!"
+	fi
+
+	logp info "Exiting in $finalizeTimeout seconds to halt system!"
 	logp endsection
 
-	sleep 3 && poweroffa
+	sleep $finalizeTimeout && poweroff
 }
 
 
