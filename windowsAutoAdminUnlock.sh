@@ -65,7 +65,7 @@ blkid|grep ntfs| while read ntfsLine; do
 				logp fatal "Couldn't fix the NTFS filesystem on harddisk $ntfsBlk!"
 			fi
 		else
-			if [ -d $mountPoint/Windows ]; then
+			if [ -d $mountPoint/Windows/System32 ]; then
 				logp info "Found Windows-installation @ $ntfsBlk!"
 				return 0
 			else
