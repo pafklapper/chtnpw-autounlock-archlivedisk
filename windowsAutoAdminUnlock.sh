@@ -10,6 +10,7 @@ ntfsBlk=""
 
 # bash run options
 set -o pipefail
+set -e -u
 
 # trap
 function finish {
@@ -106,6 +107,18 @@ main()
 	fi
 
 	clear
+echo -e "\e[31m"
+cat<<EOF
+much love to:
+__    __    ___    _     ___    __        __     ___    ____    _
+ /  __) \  |   |  / |    \  |  | (__    __) |    \  |  |    |  |
+|  /     |  \_/  |  |  |\ \ |  |    |  |    |     ) |  |    |  |
+| |      |   _   |  |  | \ \|  |    |  |    |  __/  |  |    |  |
+|  \__   |  / \  |  |  |  \    |    |  |    | |      \  \/\/  /
+_\    )_/  |___|  \_|  |___\   |____|  |____| |_______\      /___
+EOF
+echo -e "\e[97m"
+
 	logp info "Our purpose today: to automagically unlocking Administrator user on Windows partition.."
 	logp info "(this is a chntpw wrapper script)"
 	logp beginsection
@@ -122,10 +135,10 @@ main()
 	else
 		logp fatal "No dice :("
 	fi
-	logp info "Exiting now to halt system!"
+	logp info "Exiting in 3 seconds to halt system!"
 	logp endsection
 
-	sleep 1 && poweroff
+	sleep 3 && poweroffa
 }
 
 

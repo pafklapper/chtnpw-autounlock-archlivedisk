@@ -1,6 +1,10 @@
 #!/bin/sh
 # run this script to build livedisk
 
+# bash run options
+set -o pipefail
+set -e -u
+
 # GLOBVARS
 wd="$(dirname $0)"
 livediskWD="$wd/wd"
@@ -40,6 +44,7 @@ rm -rf $livediskWD
 trap finish EXIT SIGINT SIGTERM
 
 clear
+logp info "Our purpose today: generating an ISO that will auto unlock the Administrator user on detected Windows partitions"
 logp beginsection
 logp info "Generating ISO, output @ $livediskOUT"
 sleep 1
@@ -47,10 +52,38 @@ sleep 1
 pacman -Qi archiso || { logp info "Installing package 'archiso'..." && pacman -Sy archiso || exit 1; }
 pacman -Qi arch-install-scripts || { logp info "Installing package 'arch-install-scripts'..." && pacman -Sy arch-install-scripts || exit 1; }
 
-cp $wd/windowsAutoAdminUnlock.service $wd/livedisk/airootfs/etc/systemd/system/
-cp $wd/windowsAutoAdminUnlock.sh $wd/livedisk/airootfs/root/
 
-mkdir -p $livediskOUT
-mkdir -p $livediskWD
+if [ -d /usr/share/archiso/configs/releng ]; then
+	
+	logp info "Setting up livedisk parameters..."
+	cp -r -n /usr/share/archiso/configs/releng/* $wd/livedisk/
+	retVal=0
+	retVal=$(($retVal + $?))
 
-sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated!" || logp warning "ISO failed to generate!"
+	cp $wd/windowsAutoAdminUnlock.service $wd/livedisk/airootfs/etc/systemd/system/
+	retVal=$(($retVal + $?))
+
+	cp $wd/windowsAutoAdminUnlock.sh $wd/livedisk/airootfs/root/
+	retVal=$(($retVal + $?))
+
+	sed -i '/^APPEND:/ s/$/ quiet splash nomodeset/' $wd/livedisk/syslinux/archiso_sys.cfg
+	retVal=$(($retVal + $?))
+
+	echo CHNTPW > $wd/livedisk/airootfs/etc/hostname
+	retVal=$(($retVal + $?))
+
+	mkdir -p $livediskOUT
+	retVal=$(($retVal + $?))
+
+	mkdir -p $livediskWD
+	retVal=$(($retVal + $?))
+	
+	if [ $retVal -eq 0 ]; then
+		sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated!" || logp fatal "ISO failed to generate!"
+	else
+		logp fatal "failed to setup livedisk environment!"
+	fi
+
+else
+	logp fatal "Archiso profile directory could not be found! (archiso is only available in vanilla Archlinux, not in Manjaro or other derivates!)"
+fi
