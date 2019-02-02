@@ -81,7 +81,7 @@ done
 unlockAdminUser()
 {
 
-(	cp -af $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
+( cp -af $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
 chntpw -u Administrator $mountPoint/Windows/System32/config/SAM<<EOF 
 1
 2
@@ -104,16 +104,14 @@ relockAdminUserAfterFirstLogin()
 {
 cat>$mountPoint/autoDisableAdmin.bat<<EOF
 @ECHO OFF
-PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "net user Administrator /active:no"' -verb RunAs}"
-(goto) 2>nul & del "%~f0"
+PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$(net user Administrator /active:no) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "autoDisableAdmin")"' -verb RunAs}" && (goto) 2>nul & del "%~f0"
 EOF
 
 if [ $? -gt 0 ]; then
 	logp fatal "Couldn't insert script to Windows partition @ $mountPoint/autoDisableAdmin.bat! "
 fi
 
-
-chntpw -e $mountPoint/Windows/System32/config/SOFTWARE<<EOF 
+( chntpw -e $mountPoint/Windows/System32/config/SOFTWARE<<EOF 
 cd Microsoft\Windows\CurrentVersion\Run
 nv 1 autoDisableAdmin
 ed autoDisableAdmin
@@ -122,8 +120,15 @@ q
 y
 
 EOF
+) 1>/dev/null 2>/dev/null
 
-	return $?
+if [ $? -eq 2 ]; then
+	sync 
+	return 0;
+else
+	sync
+	return 1;
+fi
 }
 
 

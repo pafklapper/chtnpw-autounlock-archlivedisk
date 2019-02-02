@@ -66,10 +66,10 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 	cp $wd/windowsAutoAdminUnlock.sh $wd/livedisk/airootfs/root/
 	retVal=$(($retVal + $?))
 
-	sed -i '/^APPEND/ s/$/ quiet splash nomodeset vga=current loglevel=1 rd.systemd.show_status=false rd.udev.log_priority=1/' $wd/livedisk/syslinux/archiso_sys.cfg
+	sed -i '/^APPEND/ s/$/ quiet splash vga=current loglevel=0 systemd.show_status=false udev.log_priority=0/' $wd/livedisk/syslinux/archiso_sys.cfg
 	retVal=$(($retVal + $?))
 
-	sed -i '/^options/ s/$/ quiet splash nomodeset vga=current loglevel=1 rd.systemd.show_status=false rd.udev.log_priority=1/' $wd/livedisk/efiboot/loader/entries/*.conf
+	sed -i '/^options/ s/$/ quiet splash vga=current loglevel=0 systemd.show_status=false udev.log_priority=0/' $wd/livedisk/efiboot/loader/entries/*.conf
 	retVal=$(($retVal + $?))
 
 	sed -i '/timeout/c\timeout 1' $wd/livedisk/efiboot/loader/loader.conf
