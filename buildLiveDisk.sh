@@ -46,12 +46,9 @@ trap finish EXIT SIGINT SIGTERM
 clear
 logp info "Our purpose today: generating an ISO that will auto unlock the Administrator user on detected Windows partitions"
 logp beginsection
-logp info "Generating ISO, output @ $livediskOUT"
-sleep 1
 
-pacman -Qi archiso || { logp info "Installing package 'archiso'..." && pacman -Sy archiso || exit 1; }
-pacman -Qi arch-install-scripts || { logp info "Installing package 'arch-install-scripts'..." && pacman -Sy arch-install-scripts || exit 1; }
-
+pacman -Qi archiso 1>/dev/null || logp fatal "Package 'archiso' is not installed! Be warned: Arch derivatives like Manjaro don't have this package in repo :( \n Proposed: pacman -S archiso "
+pacman -Qi arch-install-scripts 1>/dev/null || logp fatal "Package 'archiso' is not installed! Be warned: Arch derivatives like Manjaro don't have this package in repo :( \n Proposed: pacman -S arch-install-scripts"
 
 if [ -d /usr/share/archiso/configs/releng ]; then
 	
@@ -85,12 +82,14 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 	retVal=$(($retVal + $?))
 	
 	if [ $retVal -eq 0 ]; then
-		sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated!" || logp fatal "ISO failed to generate!"
+		logp info "Generating ISO, resulting image can be found @ $livediskOUT"
+		sleep 1
+		sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated! ISO @ $livediskOut" || logp fatal "ISO failed to generate!"
 	else
-		logp fatal "failed to setup livedisk environment!"
+		logp fatal "Failed to setup livedisk environment!"
 	fi
 
 	logp endsection
 else
-	logp fatal "Archiso profile directory could not be found! (archiso is only available in vanilla Archlinux, not in Manjaro or other derivates!)"
+	logp fatal "Archiso profile directory could not be found!"
 fi
