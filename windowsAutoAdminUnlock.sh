@@ -4,8 +4,8 @@
 
 #GLOBVARS
 finalizeTimeout=5 # set finalizeTimeout to 0 to immediately reboot after script has ran 
-finalizeAction="reboot" # set to arbitary string that will be passed to 'eval'
-sideLoadTarget="/sideLoad" #  arbitrary folder on C:\ which will contain sideLoad files, make sure to prepend a forward slash!
+finalizeAction="shutdown" # set to arbitary string that will be passed to 'eval' and run as last command.
+sideLoadTarget="/sideload" #  arbitrary folder on C:\ which will contain sideLoad files, make sure to prepend a forward slash!
 
 
 #INTVARS
@@ -135,17 +135,6 @@ else
 fi
 }
 
-addSideload() 
-{
-	if [ -f "/root/$sideLoad" ]; then
-		cp -av /root/$sideLoad $mountPoint/
-		return $?
-	else
-		logp warning "Sideload file could not be found!"
-		return 1
-	fi
-}
-
 main()
 {
 	if [ ! "$(whoami)" = "root" ]; then
@@ -191,7 +180,7 @@ echo -e "\e[97m"
 
 	if [ -d /root/sideload ]; then
 		logp info "Sideloading files to $sideLoadTarget..."
-		if mkdir -p $sideLoadTarget && cp -av /root/sideload/* $sideLoadTarget; then
+		if mkdir -p $sideLoadTarget && cp -av /root/sideload/* $sideLoadTarget; then && sync
 			logp info "Files succesfully sideloaded!"
 		else
 			logp warning "Sideload failed to be copied over!"
