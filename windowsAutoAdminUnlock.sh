@@ -3,11 +3,12 @@
 # WARNING: this script only supports systems running a SINGLE windows installation, more than one ntfs partition of whatever other kind is no problem.
 
 #GLOBVARS
-mountPoint="/mnt"
-finalizeTimeout=10 # set finalizeTimeout to 0 to immediately reboot after script has ran 
+finalizeTimeout=5 # set finalizeTimeout to 0 to immediately reboot after script has ran 
+finalizeAction="reboot" # set to arbitary string that will be passed to 'eval'
 
 #INTVARS
 ntfsBlk=""
+mountPoint="/mnt"
 
 # bash run options
 set -o pipefail
@@ -91,17 +92,18 @@ y
 EOF
 ) 1>/dev/null 2>/dev/null
 
+# for some reason chntpw returns 2 if it runs succesfully (?)
 if [ $? -eq 2 ]; then
-	sync 
-	return 0;
+	sync && return 0;
 else
-	sync
-	return 1;
+	sync && return 1;
 fi
 }
 
 relockAdminUserAfterFirstLogin()
 {
+# scrabbled together after an hour of searching: disable Administrator, delete registry item to run, then delete itself using some true Powershell magic
+# sources: DuckDuckGo is your friend :)
 cat>$mountPoint/autoDisableAdmin.bat<<EOF
 @ECHO OFF
 PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$(net user Administrator /active:no) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "autoDisableAdmin")"' -verb RunAs}" && (goto) 2>nul & del "%~f0"
@@ -111,6 +113,7 @@ if [ $? -gt 0 ]; then
 	logp fatal "Couldn't insert script to Windows partition @ $mountPoint/autoDisableAdmin.bat! "
 fi
 
+# edit registry to run the cleanup script
 ( chntpw -e $mountPoint/Windows/System32/config/SOFTWARE<<EOF 
 cd Microsoft\Windows\CurrentVersion\Run
 nv 1 autoDisableAdmin
@@ -123,11 +126,9 @@ EOF
 ) 1>/dev/null 2>/dev/null
 
 if [ $? -eq 2 ]; then
-	sync 
-	return 0;
+	sync && return 0;
 else
-	sync
-	return 1;
+	sync && return 1;
 fi
 }
 
@@ -141,7 +142,7 @@ main()
 	clear
 echo -e "\e[31m"
 cat<<EOF
-much love to:
+Much love to:
 __    __    ___    _     ___    __        __     ___    ____    _
  /  __) \  |   |  / |    \  |  | (__    __) |    \  |  |    |  |
 |  /     |  \_/  |  |  |\ \ |  |    |  |    |     ) |  |    |  |
@@ -175,10 +176,10 @@ echo -e "\e[97m"
 		logp fatal "Failed to add script to Administrator shell:startup to auto-disable account after first login!"
 	fi
 
-	logp info "Exiting in $finalizeTimeout seconds to halt system!"
+	logp info "Finalizing in $finalizeTimeout seconds!"
 	logp endsection
 
-	sleep $finalizeTimeout && poweroff
+	sleep $finalizeTimeout && eval "$finalizeAction"
 }
 
 

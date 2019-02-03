@@ -22,7 +22,7 @@ This repo contains two scripts which function mainly to wrap up 'chntpw':
 
 Available parameters:
 
-   -finalizeTimeout=5 -> wait time before shutdown
+   -finalizeTimeout=5 -> wait time before finalizing
 
    -finalizeAction=reboot -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
 
