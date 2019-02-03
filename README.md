@@ -1,11 +1,13 @@
 ### Purpose: 
-a pluggable way to quickly unlock the builtin Administrator account on Windows. As a sysadmin working in varying environments, I can't always wait for the official techsupport to take over the machine. 
+a pluggable way to quickly unlock the builtin Administrator account on Windows. As a sysadmin working in varying environments, you can't always wait for the official techsupport to take over the machine. 
+
+After the first login as 'Administrator' the account will be blocked again.
 
 ### Steps:
 1. Run buildLivedisk.sh on an Arch machine (vanilla, not manjaro or whatever) after having installed the packages archiso and arch-iso-scripts
 Proposed: pacman -Sy archiso arch-iso-script
 
-If everything works an burnable image in the form of "archlinux-[date]-x86-64.iso" should appear in the folder "iso"
+If everything works a burnable image in the form of "archlinux-[date]-x86-64.iso" should appear in the folder "iso"
 
 2. Burn that iso to an USB (or whatever)
 Proposed: dd if=[PATH-TO-ISO-FILE] of=/dev/sd[DRVELETTER-OF-USB] bs=4M status=progress && sync
