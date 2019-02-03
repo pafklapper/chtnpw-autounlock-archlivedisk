@@ -61,7 +61,7 @@ blkid|grep ntfs| while read ntfsLine; do
 	if [ $? -gt 0 ]; then
 			logp warning "Mounting harddisk $ntfsBlk failed! "
 			umount -f $ntfsBlk
-			ntfsfix -b -d $ntfsBlk
+			ntfsfix -d $ntfsBlk
 			if  [ ! $? -eq 0 ]; then
 				logp fatal "Couldn't fix the NTFS filesystem on harddisk $ntfsBlk!"
 			fi
