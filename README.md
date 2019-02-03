@@ -20,7 +20,7 @@ This repo contains two scripts which function mainly to wrap up 'chntpw':
 	- clears password
 - adds script autoDisableAdmin.bat to root of C:\ that disables Administrator user, clears "..\CurrentVersion\Run\autoDisableAdmin" and deletes itself (Administrator must stay caged!)
 
-Available parameters:
+##### Available parameters:
 
    -finalizeTimeout=5 -> wait time before shutdown
 
