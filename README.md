@@ -28,7 +28,7 @@ Optional parameters:
 
    -finalizeAction="shutdown" -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
 
-   -sideLoadTarget="/sideload" -> change to location to which files in "sideload"-folder will be copied. Must be prepended by a forward slash!
+   -sideLoadTarget="/sideload" -> change to location to which files in "sideload"-folder will be copied on Windows partition. Must be prepended by a forward slash!
 
 2. buildLiveDisk.sh
 	- it checks if archiso and arch-install-scripts are available
