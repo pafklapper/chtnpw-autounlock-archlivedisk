@@ -22,14 +22,20 @@ This repo contains two scripts which function mainly to wrap up 'chntpw':
 	- clears password
 - adds script autoDisableAdmin.bat to root of C:\ that disables Administrator user, clears "..\CurrentVersion\Run\autoDisableAdmin" and deletes itself (Administrator must stay caged!)
 
-Available parameters:
+Optional parameters:
 
    -finalizeTimeout=5 -> wait time before finalizing
 
-   -finalizeAction=reboot -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
+   -finalizeAction="shutdown" -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
+
+   -sideLoadTarget="/sideload" -> change to location to which files in "sideload"-folder will be copied. Must be prepended by a forward slash!
 
 2. buildLiveDisk.sh
 	- it checks if archiso and arch-install-scripts are available
 	- sets up livedisk working directory, then copies in .service file and windowsAutoAdminUnlock.sh
 	- sets various parameters for cleanliness
 	- builds iso using livedisk/build.sh (stock script from arch-install-scripts)
+
+Optional parameters:
+
+	- one may add files to the 'sideload' folder. These will be copied over by the livedisk to the Windows partition at the location specified by "sideLoadTarget"

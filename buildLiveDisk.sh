@@ -63,6 +63,15 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 	cp $wd/windowsAutoAdminUnlock.sh $wd/livedisk/airootfs/root/
 	retVal=$(($retVal + $?))
 
+	if find "$wd/sideload" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+		logp info "Copying over sideload files..."
+		mkdir -p $wd/livedisk/airootfs/root/sideload
+		retVal=$(($retVal + $?))
+
+		cp -av $wd/sideload/* $wd/livedisk/airootfs/root/sideload/
+		retVal=$(($retVal + $?))
+	fi
+
 	sed -i '/^APPEND/ s/$/ quiet splash vga=current loglevel=0 systemd.show_status=false udev.log_priority=0/' $wd/livedisk/syslinux/archiso_sys.cfg
 	retVal=$(($retVal + $?))
 
@@ -84,7 +93,7 @@ if [ -d /usr/share/archiso/configs/releng ]; then
 	if [ $retVal -eq 0 ]; then
 		logp info "Generating ISO, resulting image can be found @ $livediskOUT"
 		sleep 1
-		sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated! ISO @ $livediskOut" || logp fatal "ISO failed to generate!"
+		sh $wd/livedisk/build.sh -A "Automatic unlocker for Windows Admin account - Arch Livedisk" -L "CHNTPW" -o $livediskOUT -w $livediskWD && logp info "ISO succesfully generated! ISO @ $livediskOUT" || logp fatal "ISO failed to generate!"
 	else
 		logp fatal "Failed to setup livedisk environment!"
 	fi

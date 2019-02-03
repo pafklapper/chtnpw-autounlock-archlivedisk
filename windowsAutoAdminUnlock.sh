@@ -5,10 +5,13 @@
 #GLOBVARS
 finalizeTimeout=5 # set finalizeTimeout to 0 to immediately reboot after script has ran 
 finalizeAction="reboot" # set to arbitary string that will be passed to 'eval'
+sideLoadTarget="/sideLoad" #  arbitrary folder on C:\ which will contain sideLoad files, make sure to prepend a forward slash!
+
 
 #INTVARS
 ntfsBlk=""
 mountPoint="/mnt"
+sideLoadTarget="$mountPoint$sideLoadTarget"
 
 # bash run options
 set -o pipefail
@@ -132,6 +135,16 @@ else
 fi
 }
 
+addSideload() 
+{
+	if [ -f "/root/$sideLoad" ]; then
+		cp -av /root/$sideLoad $mountPoint/
+		return $?
+	else
+		logp warning "Sideload file could not be found!"
+		return 1
+	fi
+}
 
 main()
 {
@@ -169,11 +182,20 @@ echo -e "\e[97m"
 		logp fatal "No dice :("
 	fi
 	
-	logp info "Adding script to Administrator shell:startup to auto-disable account after first login..."
+	logp info "Adding cleanup script to Administrator shell:startup to auto-disable account after first login..."
 	if relockAdminUserAfterFirstLogin; then
-		logp info "Succesfully added script!"
+		logp info "Succesfully added cleanup script!"
 	else
-		logp fatal "Failed to add script to Administrator shell:startup to auto-disable account after first login!"
+		logp fatal "Failed to add cleanup script to Administrator shell:startup to auto-disable account after first login!"
+	fi
+
+	if [ -d /root/sideload ]; then
+		logp info "Sideloading files to $sideLoadTarget..."
+		if mkdir -p $sideLoadTarget && cp -av /root/sideload/* $sideLoadTarget; then
+			logp info "Files succesfully sideloaded!"
+		else
+			logp warning "Sideload failed to be copied over!"
+		fi
 	fi
 
 	logp info "Finalizing in $finalizeTimeout seconds!"
