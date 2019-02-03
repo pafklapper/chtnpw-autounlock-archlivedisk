@@ -21,7 +21,9 @@ This repo contains two scripts which function mainly to wrap up 'chntpw':
 - adds script autoDisableAdmin.bat to root of C:\ that disables Administrator user, clears "..\CurrentVersion\Run\autoDisableAdmin" and deletes itself (Administrator must stay caged!)
 
 Available parameters:
+
    -finalizeTimeout=5 -> wait time before shutdown
+
    -finalizeAction=reboot -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
 
 2. buildLiveDisk.sh
