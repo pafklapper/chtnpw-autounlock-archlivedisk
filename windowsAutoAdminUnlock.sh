@@ -180,7 +180,7 @@ echo -e "\e[97m"
 
 	if [ -d /root/sideload ]; then
 		logp info "Sideloading files to $sideLoadTarget..."
-		if mkdir -p $sideLoadTarget && cp -av /root/sideload/* $sideLoadTarget; then && sync
+		if mkdir -p $sideLoadTarget && cp -av /root/sideload/* $sideLoadTarget && sync; then
 			logp info "Files succesfully sideloaded!"
 		else
 			logp warning "Sideload failed to be copied over!"
@@ -192,6 +192,5 @@ echo -e "\e[97m"
 
 	sleep $finalizeTimeout && eval "$finalizeAction"
 }
-
 
 main $@
