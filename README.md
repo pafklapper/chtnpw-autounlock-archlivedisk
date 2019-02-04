@@ -26,7 +26,7 @@ Optional parameters:
 
    -finalizeTimeout=5 -> wait time before finalizing
 
-   -finalizeAction="shutdown" -> select shutdown/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
+   -finalizeAction="poweroff" -> select poweroff/reboot for continuation (or choose whatever oneliner to pass through to 'eval')
 
    -sideLoadTarget="/sideload" -> change to location to which files in "sideload"-folder will be copied on Windows partition. Must be prepended by a forward slash!
 

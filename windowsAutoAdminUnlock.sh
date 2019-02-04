@@ -4,7 +4,7 @@
 
 #GLOBVARS
 finalizeTimeout=5 # set finalizeTimeout to 0 to immediately reboot after script has ran 
-finalizeAction="shutdown" # set to arbitary string that will be passed to 'eval' and run as last command.
+finalizeAction="poweroff" # set to arbitary string that will be passed to 'eval' and run as last command.
 sideLoadTarget="/sideload" #  arbitrary folder on C:\ which will contain sideLoad files, make sure to prepend a forward slash!
 
 
