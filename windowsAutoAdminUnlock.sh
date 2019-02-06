@@ -6,7 +6,7 @@
 finalizeTimeout=15 # set finalizeTimeout to 0 to immediately reboot after script has ran 
 finalizeAction="poweroff" # set to arbitary string that will be passed to 'eval' and run as last command.
 sideLoadTarget="sideload" #  arbitrary folder on C:\ which will contain sideLoad files
-sideLoadExecutables=("HPQFlash/HpqFlash.exe -s -a" "powerSHELL cmd /c pause | out-null") # array of execubles/commands that will be autorun once. Use spaces as seperator. Prepend a powershell command with "powerSHELL"
+sideLoadExecutables=("HPQFlash/HpqFlash.exe -s -a" "powerSHELL pause") # array of execubles/commands that will be autorun once. Use spaces as seperator. Prepend a powershell command with "powerSHELL"
 # EXAMPLE: sideLoadExecutables=("HPQFlash/HpqFlash.exe -s -a" "powerSHELL whoami")  
 
 #INTVARS
@@ -146,7 +146,7 @@ for exe in "${sideLoadExecutables[@]}"; do
 
 	if ! [ "$(echo $exe | grep -e "^powerSHELL")" = "" ]; then
 		exe="$(echo $exe | sed  -r 's/^powerSHELL//g')"
-		logp info "CMD: \'$exe\' will be run once at next boot!"
+		logp info "CMD: '$exe' will be run once at next boot!"
 cat>$mountPoint/$sanitizedExe.bat<<EOF
 @ECHO OFF
 PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$( $exe ) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "$sanitizedExe")"' -verb RunAs}" && (goto) 2>nul & del "%~f0"

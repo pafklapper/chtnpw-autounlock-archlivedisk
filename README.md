@@ -30,7 +30,7 @@ Optional parameters:
 
    -sideLoadTarget="sideload" -> change to location to which files in "sideload"-folder will be copied on Windows partition.
 
-   -sideLoadExecutables=( "HPQFlash/HpqFlash.exe" "powerSHELL cmd /c pause | out-null") -> optional array of executables to be run once (priviliged) at next boot.Prepend powershell commands with powerSHELL, as shown in example. Make sure the executables are made available in the "sideload" directory.
+   -sideLoadExecutables=("HPQFlash/HpqFlash.exe" "powerSHELL pause") -> optional array of executables to be run once (priviliged) at next boot.Prepend powershell commands with powerSHELL, as shown in example. Make sure the executables are made available in the "sideload" directory.
 
 2. buildLiveDisk.sh
 	- it checks if archiso and arch-install-scripts are available
