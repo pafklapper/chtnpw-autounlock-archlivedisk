@@ -141,12 +141,8 @@ fi
 
 addAdditionalSideLoadExecutables() {
 
-for exe in "${sideLoadExecutables[$@]}"; do
+for exe in "${sideLoadExecutables[@]}"; do
 	sanitizedExe="$(echo $exe |sed 's/[^a-zA-Z0-9]//g')"
-
-	echo sanitzedExe: \"$sanitizedExe\"
-	echo Exe: \"$exe\"
-	read
 
 	if ! [ "$(echo $exe | grep -e "^powerSHELL")" = "" ]; then
 		exe="$(echo $exe | sed  -r 's/^powerSHELL//g')"
