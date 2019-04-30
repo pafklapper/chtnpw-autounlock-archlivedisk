@@ -47,3 +47,4 @@ Optional parameters:
 2. Maybe add powershell-script to move SAM.old back in place (if possible on live system?) as an alternative to just disabling Administrator-account <- for continuity on enterprise systems that for whatever reasons use the build-in Administrator user.
 3. Maybe add option to reboot after scripts have run? 
 4. Maybe put all powershell scripts in one master-script?
+5. Option to delete sideload folder after script has run?
