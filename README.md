@@ -40,7 +40,7 @@ Optional parameters:
 
 Optional parameters:
 
-	-one may add files to the 'sideload' folder. These will be copied over by the livedisk to the Windows partition at the location specified by "sideLoadTarget"
+   -one may add files to the 'sideload' folder. These will be copied over by the livedisk to the Windows partition at the location specified by "sideLoadTarget"
 
 ### TO DO
 1. Important: make user arch-livedisk scripts are run as root (add sudo detection?) 
