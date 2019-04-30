@@ -43,7 +43,7 @@ Optional parameters:
    -one may add files to the 'sideload' folder. These will be copied over by the livedisk to the Windows partition at the location specified by "sideLoadTarget"
 
 ### TO DO
-1. Important: make user arch-livedisk scripts are run as root (add sudo detection?) 
+1. Important: make sure arch-livedisk-build-scripts are run as root (add sudo detection?) 
 2. Maybe add powershell-script to move SAM.old back in place (if possible on live system?) as an alternative to just disabling Administrator-account <- for continuity on enterprise systems that for whatever reasons use the build-in Administrator user.
 3. Maybe add option to reboot after scripts have run? 
 4. Maybe put all powershell scripts in one master-script?
