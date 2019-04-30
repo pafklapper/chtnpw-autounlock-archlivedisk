@@ -30,7 +30,7 @@ Optional parameters:
 
    -sideLoadTarget="sideload" -> change to location to which files in "sideload"-folder will be copied on Windows partition.
 
-   -sideLoadExecutables=("HPQFlash/HpqFlash.exe" "powerSHELL pause") -> optional array of executables to be run once (priviliged) at next boot.Prepend powershell commands with powerSHELL, as shown in example. Make sure the executables are made available in the "sideload" directory.
+   -sideLoadExecutables=("HPQFlash\HpqFlash.exe" "powerSHELL pause") -> optional array of executables to be run once (priviliged) at next boot.Prepend powershell commands with powerSHELL, as shown in example. Make sure the executables are made available in the "sideload" directory.
 
 2. buildLiveDisk.sh
 	- it checks if archiso and arch-install-scripts are available
@@ -41,3 +41,8 @@ Optional parameters:
 Optional parameters:
 
 	- one may add files to the 'sideload' folder. These will be copied over by the livedisk to the Windows partition at the location specified by "sideLoadTarget"
+
+### TO DO
+1. Maybe add powershell-script to move SAM.old back in place (if possible on live system?) as an alternative to just disabling Administrator-account <- for continuity on enterprise systems that for whatever reasons use the build-in Administrator user.
+2. Maybe add option to reboot after scripts have run? 
+3. Maybe put all powershell scripts in one master-script?

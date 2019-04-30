@@ -3,11 +3,11 @@
 # WARNING: this script only supports systems running a SINGLE windows installation, more than one ntfs partition of whatever other kind is no problem.
 
 #GLOBVARS
-finalizeTimeout=15 # set finalizeTimeout to 0 to immediately reboot after script has ran 
+finalizeTimeout=3 # set finalizeTimeout to 0 to immediately do $finalizeAction after script has ran 
 finalizeAction="poweroff" # set to arbitary string that will be passed to 'eval' and run as last command.
 sideLoadTarget="sideload" #  arbitrary folder on C:\ which will contain sideLoad files
-sideLoadExecutables=("HPQFlash/HpqFlash.exe -s -a" "powerSHELL pause") # array of execubles/commands that will be autorun once. Use spaces as seperator. Prepend a powershell command with "powerSHELL"
-# EXAMPLE: sideLoadExecutables=("HPQFlash/HpqFlash.exe -s -a" "powerSHELL whoami")  
+sideLoadExecutables=() # array of execubles/commands that will be autorun once. Use spaces as seperator. Prepend a powershell command with "powerSHELL"
+# EXAMPLE: sideLoadExecutables=("HPQFlash\HpqFlash.exe -s -a" "powerSHELL whoami")  
 
 #INTVARS
 ntfsBlk=""
@@ -145,17 +145,15 @@ for exe in "${sideLoadExecutables[@]}"; do
 	sanitizedExe="$(echo $exe |sed 's/[^a-zA-Z0-9]//g')"
 
 	if ! [ "$(echo $exe | grep -e "^powerSHELL")" = "" ]; then
-		exe="$(echo $exe | sed  -r 's/^powerSHELL//g')"
-		logp info "CMD: '$exe' will be run once at next boot!"
+		exe="$(echo $exe | sed  -r 's/^powerSHELL //g')"
+		logp info "PS: '$exe' will be run once at next boot!"
 cat>$mountPoint/$sanitizedExe.bat<<EOF
-@ECHO OFF
-PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$( $exe ) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "$sanitizedExe")"' -verb RunAs}" && (goto) 2>nul & del "%~f0"
+PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$($exe; echo powerShellDumbestShell) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "$sanitizedExe") -and \$(Remove-Item "%~f0" -Force)"' -verb RunAs}"
 EOF
 	else
 		logp info "EXE: 'C:\\$sideLoadTarget\\$exe' will be run once at next boot!"
 cat>$mountPoint/$sanitizedExe.bat<<EOF
-@ECHO OFF
-PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList \'-noprofile -command "\$(& C:\\$sideLoadTarget\\$exe) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "$sanitizedExe")"\' -verb RunAs}" && (goto) 2>nul & del "%~f0"
+PowerShell.exe -NoProfile -Command "&{ start-process powershell -ArgumentList '-noprofile -command "\$(C:\\$sideLoadTarget\\$exe; echo powerShellDumbestShell) -and \$(Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "$sanitizedExe") -and \$(Remove-Item "%~f0" -Force)"' -verb RunAs}" && (goto) 2>nul & del "%~f0"
 EOF
 	fi
 
