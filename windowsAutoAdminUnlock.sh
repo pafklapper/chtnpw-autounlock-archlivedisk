@@ -87,8 +87,16 @@ done
 unlockAdminUser()
 {
 
-( cp -af $mountPoint/Windows/System32/config/SAM $mountPoint/Windows/System32/config/SAM.old
-chntpw -u Administrator $mountPoint/Windows/System32/config/SAM<<EOF 
+# some stupid programs change SAM to sam, so check first
+if [ -f $mountPoint/Windows/System32/config/SAM ]; then; samFile=SAM;fi 
+if [ -f $mountPoint/Windows/System32/config/sam ]; then; samFile=sam;fi 
+if [ -z "$samFile" ]; then; logp fatal "SAM-File coult not be found";fi
+	
+
+
+
+( cp -af $mountPoint/Windows/System32/config/$samFile $mountPoint/Windows/System32/config/$samFile.old
+chntpw -u Administrator $mountPoint/Windows/System32/config/$samFile<<EOF 
 1
 2
 q
